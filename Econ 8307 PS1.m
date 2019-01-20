@@ -49,7 +49,7 @@ result1 = sum1/N;
  
  %Question 2
  %2.A
- %Use World Bank Indicator data for GDP in constant 2010 US$ for China and
+ %Use World Bank Indicator data for GDP per capita in constant 2010 US$ for China and
  %USA for years 1960-2017 available here https://data.worldbank.org/indicator/NY.GDP.PCAP.KD?locations=CN-US
  %2.B
  China = [191.791179910216;140.913499235072;131.96337147674;142.021955444481;163.991325226585;187.274631568573;201.52324200402;185.075927473726;172.913752439848;196.740126889365;228.317702823625;237.813838393538;240.881888917967;253.714372960062;254.267484665894;271.599476492383;263.23062210942;279.32454675135;307.76619470515;326.768369193998;347.887413035502;361.224710649125;387.745580908334;423.593498767967;481.364595759347;538.690827266253;578.184040366224;635.494603029004;695.599054411093;713.689527590362;730.772489044822;787.867435156269;888.911004119008;1000.61180975351;1118.49957748173;1227.55640691521;1335.36268011202;1443.77474185404;1542.06412996664;1645.98799567879;1771.74150579539;1905.61078010947;2065.71857925612;2258.91210541049;2472.58655569402;2738.2054599526;3069.30478095137;3487.84576561013;3805.02599866378;4142.03828597868;4560.51258600929;4971.544928635;5336.06014319861;5721.69381888796;6108.23877494863;6496.62401255517;6894.46452231334;7329.08929913216];
@@ -65,7 +65,7 @@ result1 = sum1/N;
  end
  figure
  plot(Year, Growth)
- title('Real GDP Growth Rate for China and USA between 1960-2017')
+ title('Real GDP Per Capita Growth Rate for China and USA 1961-2017')
 xlabel('Year')
 ylabel('Growth Rate')
 legend({'China','USA'},'Location','southeast')
@@ -91,7 +91,7 @@ legend({'China','USA'},'Location','southeast')
  T = 4;
  epsilon=1e-15;
  initialcapital = 1;
- guessinitialcons = 0; %could be any guess
+ guessinitialcons = initialcapital; %could be any guess
  
  if guessinitialcons < 0
      guessinitialcons = 0;
@@ -129,5 +129,7 @@ legend({'China','USA'},'Location','southeast')
  %Print optimal consumption and capital series
  c
  k
- 
- 
+ %We have set the tolerance level equal to epsilon (initally 1e-15).
+ %This means our answer, while approximate, will have leftover capital of
+ %less than epsilon in absolute value. Each period's consumption is
+ %therefore at least that "close" to the actual optimal vlaue.
