@@ -1,0 +1,133 @@
+%Macro III
+%Assignment 1
+%Fred Xu and Jonah Coste
+%1/17/19
+
+%Question 1
+%1.A
+%1.A.1
+N = randi(10);
+%1.A.2
+X = rand(N,1)*2 -1;
+%Expected value of mean is 0.
+%1.A.3.1
+sum1 = 0;
+for i=1:N
+    sum1 = sum1 + X(i);
+end
+result1 = sum1/N;
+%1.A.3.2
+ result2 = mean(X);
+ %1.A.4
+ result1
+ result2
+ 
+ %1.B
+ %1.B.1
+ N = randi(10);
+ M = randi(10);
+ L = randi(10);
+ %1.B.2
+ matrix1 = rand(N,M)*2 -1;
+ matrix2 = rand(M,L)*2 -1;
+ %1.B.3.1
+ resultmatrix1 = zeros(N,L);
+ for i =1:N
+     for j = 1:L  
+        val = 0;
+        for h = 1:M
+            val = val + matrix1(i,h) * matrix2(h,j);
+        end
+        resultmatrix1(i,j) = val;
+     end
+ end
+ %1.B.3.2
+ resultmatrix2 = matrix1 * matrix2;
+ %1.B.4
+ resultmatrix1
+ resultmatrix2
+ 
+ %Question 2
+ %2.A
+ %Use World Bank Indicator data for GDP in constant 2010 US$ for China and
+ %USA for years 1960-2017 available here https://data.worldbank.org/indicator/NY.GDP.MKTP.KD?locations=CN-US
+ %2.B
+ China = [127938142382.708;	93049410949.895;	87857253828.0692;	96906550968.2098;	114524161928.612;	133936007378.37;	148200192169.756;	139649041075.3;	133923430402.187;	156610059507.107;	186835800986.115;	200026408541.997;	207647414703.955;	223760854088.397;	228929729818.938;	248892402260.237;	244984791537.905;	263530140255.295;	294275263560.25;	316640183590.83;	341359305729.89;	359015821543.505;	391091825271.573;	433467463224.249;	499090846998.185;	566185607089.922;	616800952422.284;	688898391994.546;	766292786310.892;	798368790038.959;	829561967976.346;	906662087029.132;	1035554652468.52;	1179160981085.92;	1333066943927.94;	1479027474653.82;	1625870831170.38;	1775951215586.11;	1915143415250.11;	2061986771766.67;	2237080553585.02;	2423651070682.23;	2644946068879.54;	2910382356610.87;	3204657620171.13;	3569853222249.4;	4023919953922.87;	4596579616811.11;	5040346714259.97;	5514129888591.98;	6100620488867.55;	6682402684926.16;	7207389755117.65;	7766512755882.13;	8333286913499.17;	8908300778495.9;	9505156930655.12;	10161012758870.3];
+ USA = [3078071080474.67;	3148866715325.58;	3340947584960.44;	3487949278698.7;	3690250336863.23;	3926426358422.47;	4181644071719.94;	4286185173512.94;	4491922061841.55;	4631171645758.64;	4779684394200;	4937197781100;	5197055474100;	5490331802900;	5461938301500;	5451141221800;	5744744596800;	6009496747300;	6343726022200;	6545183142700;	6529173871800;	6698571354500;	6570568952800;	6874947746100;	7374006181400;	7686570948200;	7956493688100;	8231927424700;	8577995347000;	8893710527300;	9064413765500;	9057698437100;	9379735498400;	9637289595800;	10026408985500;	10299024618300;	10689963360600;	11169624848700;	11666663209400;	12213269668400;	12713058213400;	12837135352100;	13066422980900;	13433168199500;	13941713404100;	14408093840400;	14792303791800;	15055395304800;	15011490541400;	14594842181900;	14964372000000;	15204019634600;	15542161722300;	15802855301300;	16208861247400;	16672691917800;	16920327941800;	17304984279400];
+ %2.C
+ sz = size(China,1) - 1;
+ Growth = zeros(sz ,2);
+ Year = zeros(sz,1);
+ for i = 1:sz
+     Growth(i,1) = China(i+1,1) / China(i,1) -1;
+     Growth(i,2) = USA(i+1,1) / USA(i,1) -1;
+     Year(i,1) = 1960 + i;
+ end
+ figure
+ plot(Year, Growth)
+ title('Real GDP Growth Rate for China and USA between 1960-2017')
+xlabel('Year')
+ylabel('Growth Rate')
+legend({'China','USA'},'Location','southeast')
+ 
+ %Question 3
+ %3.A
+ % Agent's budget constraint is:
+ % f(k_t) + (1-delta) * k_t >= c_t + k_{t+1}
+ % aslo k_{t+1} >= 0
+ %3.B
+ % From t=1 to T-1 the first order condition that charachterizes the
+ % solution is:
+ % u'(c_t) = beta * u'(c_{t+1}) * [f'(k_{t+1}) + 1 - delta]
+ % The optimality condtion at period T is:
+ % c_T =  f(k_T) + (1-delta) * k_T
+ % At the end of period T there should be zero capital left over (i.e.
+ % k_{T+1} = 0)
+ % 3.C
+ %parameters
+ beta = .97;
+ delta = .1;
+ theta = .3;
+ T = 4;
+ epsilon=1e-15;
+ initialcapital = 1;
+ guessinitialcons = 0; %could be any guess
+ 
+ if guessinitialcons < 0
+     guessinitialcons = 0;
+ end %fail safe
+ 
+ c = zeros(T,1);
+ k = zeros (T+1,1);
+ k(1) = initialcapital;
+ 
+ guess = guessinitialcons;
+ last = -2*epsilon; % to allow for guess of 0
+ step = k(1);
+ 
+ while abs(guess - last) > epsilon || abs(k(T+1)) > epsilon
+     c(1) = guess;
+     ind = 0;
+     for i= 1: T-1
+        if k(i)^theta + (1 - delta)*k(i) - c(i) >= 0
+            k(i+1) = k(i)^theta + (1 - delta)*k(i) - c(i);
+            c(i+1) = beta * c(i) * (theta * k(i+1)^(theta-1) + 1 - delta);
+        else
+            ind = 1;
+        end
+     end
+     k(T+1) = k(T)^theta + (1 - delta)*k(T) - c(T);
+     if k(T+1) < 0 || ind == 1
+         step = step/2;
+         guess = last + step;
+     else
+         last = guess;
+         guess = guess + step;
+     end
+ end
+ 
+ %Print optimal consumption and capital series
+ c
+ k
+ 
+ 
