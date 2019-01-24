@@ -32,7 +32,7 @@ guess = [1;1];
  
  T = [pi_e, 1-pi_e; 1-pi_u, pi_u];
  U = [log(1); log(.9)];
- I = [1,0;0,1];
+ I = eye(2);
  
  V=inv(I-beta*T)*U;
  
@@ -75,17 +75,10 @@ guess = [1;1];
  T = zeros(N);
  nstar = zeros(N,1);
  pi = zeros(N,1);
- I = zeros(N);
+ I = eye(N);
+ T=T+(1-p)/(N-1)+eye(N)*(p-(1-p)/(N-1));
  for i =1:N
      Z(i) = i/N;
-     for j = 1:N
-         if j == i
-             T(i,j) = p;
-             I(i,j) = 1;
-         else
-             T(i,j) = (1-p)/(N-1);
-         end
-     end
      nstar(i) = (w/(Z(i)*alpha))^(1/(alpha-1));
      pi(i)=Z(i)*nstar(i)^alpha - w*nstar(i);
  end

@@ -11,7 +11,7 @@ foc=@(policy) [policy(2)^theta-delta*policy(2)-policy(1);
 	policy(1)*(beta*(theta * policy(2)^(theta-1))-1)+1-delta];
 %First order conditions in the steady state, taking vector policy as argument
 %consumption and capital are the first and second element of the policy vector
-initial_guess=[0.5 0.3];
+initial_guess=[1;1];
 steady_state=fsolve(foc,initial_guess)
 
 %Question 2
@@ -38,8 +38,8 @@ prob_matrix=[prob_e, 1-prob_u; 1-prob_e, prob_u];
 unemploymentRate=V(2,1)/(V(1,1)+V(2,1))
 
 %Question 3
-n=@(z) (w./(alpha*z)).^(1/(alpha-1));
-value=z.*n(z).^alpha-w*n(z)+beta*(1-lambda)*probMat*value;
+%n=@(z) (w./(alpha*z)).^(1/(alpha-1));
+%value=z.*n(z).^alpha-w*n(z)+beta*(1-lambda)*probMat*value;
 
 %Question 4
 %4.1
@@ -48,16 +48,7 @@ z=zeros(N,1);
 for i=1:N
 	z(i)=i/N;
 end
-probMat=zeros(N);
-for i=1:N
-	for j=1:N
-		if i==j
-			probMat(i,j)=.8;
-		else
-			probMat(i,j)=.05;
-		end
-	end
-end
+probMat=zeros(N)+.05+eye(N)*(.8-.05);
 w=1;
 alpha=.7;
 beta=.95;
