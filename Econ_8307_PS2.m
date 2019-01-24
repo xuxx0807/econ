@@ -5,10 +5,18 @@
 
 %Question 1
 %Uses steady function defined in steady.m file.
-guess = [1;1];
  
-%prints answer
- steady_state = fsolve('steady', guess)
+beta = .97;
+delta = .1;
+theta = .3;
+steady=@(x) [-x(1) + beta*x(1)*(theta * x(2)^(theta-1) + 1 - delta);
+	x(2)^theta - delta*x(2) - x(1)];
+
+initial_guess=[1;1];
+
+%prints answer. 1st entry is steady state consumption
+%2nd entry is steady state capital
+steady_state=fsolve(steady,initial_guess)
  
  %Question 2
  %2.1
@@ -42,10 +50,12 @@ guess = [1;1];
  %2.3
  %Uses steady function defined in steady2.m file.
  %CAUTION beta, pi_e, and pi_u redifined in steady2.m
- guess2 = .2;
- %prints answer
- unemployment_rate = fsolve('steady2', guess2)
  
+ 
+steady2=@(x) (1-pi_e)*(1-x) + pi_u*x - x;
+initial_guess2=.5;
+%prints answer
+unemployment_rate=fsolve(steady2,initial_guess2)
  
  %Question 3
  %nstar(z) = (w/(z*alpha))^(1/(alpha-1)
@@ -88,7 +98,7 @@ guess = [1;1];
  
  %4.2
  Vguess = zeros(5,1);
- for i= 1:1000
+ for i= 1:2000
      Vguess = pi + beta*(1-lambda)*T*Vguess;
  end
  
