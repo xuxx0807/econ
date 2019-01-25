@@ -37,9 +37,10 @@ steady_state=fsolve(steady,initial_guess)
  beta = .96;
  pi_e = .95;
  pi_u = .9;
- 
+ utility=@(c) log(x);
+
  T = [pi_e, 1-pi_e; 1-pi_u, pi_u];
- U = [log(1); log(.9)];
+ U = [utility(1); utility(.9)];
  I = eye(2);
  
  V=inv(I-beta*T)*U;
