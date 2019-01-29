@@ -4,7 +4,6 @@
 %1/24/19
 
 %Question 1
-%Uses steady function defined in steady.m file.
  
 beta = .97;
 delta = .1;
@@ -37,7 +36,7 @@ steady_state=fsolve(steady,initial_guess)
  beta = .96;
  pi_e = .95;
  pi_u = .9;
- utility=@(c) log(x);
+ utility=@(c) log(c);
 
  T = [pi_e, 1-pi_e; 1-pi_u, pi_u];
  U = [utility(1); utility(.9)];
@@ -49,8 +48,6 @@ steady_state=fsolve(steady,initial_guess)
  V
  
  %2.3
- %Uses steady function defined in steady2.m file.
- %CAUTION beta, pi_e, and pi_u redifined in steady2.m
  
  
 steady2=@(x) (1-pi_e)*(1-x) + pi_u*x - x;
@@ -123,7 +120,7 @@ unemployment_rate=fsolve(steady2,initial_guess2)
  plot(loss)
  title('Value Function Convergence--True Value Known')
  xlabel('Iteration')
- ylabel('Loss (sum of absolute differences from true value')
+ ylabel('Loss (sum of absolute differences from true value)')
  
  % ~67 iterations gives a fairly precise estimate of the value function.
  % Note this is the first iteration where loss function rounds to .0000
@@ -143,7 +140,7 @@ unemployment_rate=fsolve(steady2,initial_guess2)
  plot(loss2)
  title('Value Function Convergence')
  xlabel('Iteration')
- ylabel('Loss (sum of absolute differences')
+ ylabel('Loss (sum of absolute differences)')
  legend({'True Value Known','True Value Unknown'},'Location','southeast')
  
  % Now ~55 iterations gives a fairly precise estimate of the value function.
