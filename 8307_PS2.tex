@@ -1,6 +1,6 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath, amsthm, amssymb, enumerate, mathrsfs, graphicx, subfig, verbatim, float, pdflscape, rotating, parskip, setspace, tikz, tikz-qtree, url, epstopdf, mathtools, latexsym, flexisym,accents, multirow,diagbox,accents}
-
+\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
 \usepackage{url}
 \usepackage{listings}
 \usepackage{pdfpages}
@@ -176,7 +176,7 @@ $n^*(z) = (\frac{w}{z\alpha})^{\frac{1}{\alpha-1}}$\\
  xlabel('Iteration')
  ylabel('Loss (sum of absolute differences from true value)')
 	\end{lstlisting}
-	\includegraphics[width=\textwidth]{8307HW2Fig1.jpg}
+	\includegraphics[width=\textwidth]{Econ_8307_PS2_4_3.jpg}
 	Around 67 iterations gives a fairly precise estimate of the value function. Note 67 is the first iteration where loss function rounds to .0000.
  
 	\item
@@ -199,7 +199,7 @@ $n^*(z) = (\frac{w}{z\alpha})^{\frac{1}{\alpha-1}}$\\
  ylabel('Loss (sum of absolute differences)')
  legend({'True Value Known','True Value Unknown'},'Location','southeast')
 	\end{lstlisting}
-	\includegraphics[width=\textwidth]{8307HW2Fig2.jpg}
+	\includegraphics[width=\textwidth]{Econ_8307_PS2_4_4.jpg}
 	Now around 55 iterations appears to give a fairly precise estimate of the value function. Note 55 is the first iteration where the new loss function rounds to .0000.
 \end{enumerate}
 
