@@ -1,0 +1,83 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amsthm, amssymb, enumerate, mathrsfs, graphicx, subfig, verbatim, float, pdflscape, rotating, parskip, setspace, tikz, tikz-qtree, url, epstopdf, mathtools, latexsym, flexisym, physics,accents, multirow,diagbox,accents}
+\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{breqn}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[round]{natbib}
+\addtolength{\parskip}{\baselineskip}
+\DeclareMathSizes{12}{13}{7}{7}
+\usepackage[bottom]{footmisc}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+
+\parskip 2pt
+\setlength\parindent{0cm}
+\begin{document}
+\begin{onehalfspace}
+
+
+\title{Econ 8307\\ Assignment 3 (Spring 2019)}
+\author{Jonah Coste, Fred Xu\\George Washington University}
+\date{}
+\maketitle
+\parskip 10pt
+\textbf{Question 1}\\
+\begin{enumerate}[1.]
+	\item
+	Denote the number of firm in steady state as $M$
+	\begin{euqation}
+	\begin{split}
+	M(1-\delta)+\epsilon&=M\\
+	M&=\frac{\epsilon}{\delta}
+	\end{split}
+	\end{equation}
+	\item
+	Denote the number of firm of type $z_i$ at time $t$ as $\mu_t(z_i)$
+	\item
+	\item
+	\begin{lstlisting}
+N=10;
+epsilon=1;
+delta=.1;
+beta=1;
+gamma=.1;
+z=1:N;
+transitMatrix=eye(N);
+alpha=zeros(N,1);
+phi=ones(N,1)/N;
+mu=zeros(N,1);
+
+for i=1:N
+	for j=1:N
+		alpha(i)=alpha(i)+max(0,beta-gamma*(z(j)-z(i))^2);
+	end
+end
+for i=1:N
+	for j=1:N
+		transitMatrix(i,j)=max(0,(beta-gamma*(z(j)-z(i))^2)/alpha(i));
+	end
+end
+
+mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi)
+	\end{lstlisting}
+\end{enumerate}
+\textbf{Question 2}\\
+\begin{enumerate}[1.]
+	\item
+	\item
+	\item
+\end{enumerate}
+
+\textbf{Question 3}\\
+\begin{enumerate}[1.]
+	\item
+	\item
+	\item
+	\item
+	\item
+\end{enumerate}
+\end{onehalfspace}
+\end{document}
