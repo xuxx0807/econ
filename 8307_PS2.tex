@@ -193,7 +193,9 @@ $n^*(z) = (\frac{w}{z\alpha})^{\frac{1}{\alpha-1}}$\\
      end
  end
  
- plot(loss2)
+ plot(loss2(:,1),'-')
+ hold on
+ plot(loss2(:,2),'--')
  title('Value Function Convergence')
  xlabel('Iteration')
  ylabel('Loss (sum of absolute differences)')

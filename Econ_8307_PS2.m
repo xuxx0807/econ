@@ -137,7 +137,9 @@ unemployment_rate=fsolve(steady2,initial_guess2)
      end
  end
  
- plot(loss2)
+ plot(loss2(:,1),'-')
+ hold on
+ plot(loss2(:,2),'--')
  title('Value Function Convergence')
  xlabel('Iteration')
  ylabel('Loss (sum of absolute differences)')
