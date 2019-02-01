@@ -36,7 +36,16 @@
 	\end{equation}
 	\item
 	Denote the number of firm of type $z_i$ at time $t$ as $\mu_t(z_i)$
+	\begin{equation}
+	\mu_{t+1}(z^')=(1-\delta)\sum_{z}[f(z^'|z)\mu_t(z)]+\epsilon \phi(z^')
+	\end{equation}
 	\item
+	\begin{equation}
+	\begin{split}
+	(1-\delta)T^'\mu&=-\epsilon \mu\\
+	\mu&=-\epsilon((1-\delta)T^'-I)^{-1}\phi
+	\end{split}
+	\end{equation}
 	\item
 	\begin{lstlisting}
 N=10;
@@ -67,6 +76,14 @@ mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi)
 \textbf{Question 2}\\
 \begin{enumerate}[1.]
 	\item
+	For firm $i$ at time $t$, its value function is
+	\begin{equation}
+	V(z_{t})=\max_{n_{t}}\{z_{t}n_{t}-w_tn_{t}+\beta(1-\lambda)E_t[V(z_{t+1})]\}
+	\end{equation}
+	Transition function for the measure over type $z^'$ is
+	\begin{equation}
+	\mu(z^')=\sum_z (1-\lambda)f(z^'|z)\mu(z)+M_t\phi(z^')
+	\end{equation}
 	\item
 	\item
 \end{enumerate}
