@@ -1,0 +1,106 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amsthm, amssymb, enumerate, mathrsfs, graphicx, subfig, verbatim, float, pdflscape, rotating, parskip, setspace, tikz, tikz-qtree, url, epstopdf, mathtools, latexsym, flexisym,accents, multirow,diagbox,accents}
+
+\usepackage{url}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{breqn}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[round]{natbib}
+\addtolength{\parskip}{\baselineskip}
+\DeclareMathSizes{12}{13}{7}{7}
+\usepackage[bottom]{footmisc}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+
+\parskip 2pt
+\setlength\parindent{0cm}
+\begin{document}
+\begin{onehalfspace}
+
+
+\title{Econ 8307\\ Assignment 2 (Spring 2019)}
+\author{Jonah Coste, Fred Xu\\George Washington University}
+\date{}
+\maketitle
+\parskip 10pt
+\textbf{Question 1}
+\begin{enumerate}[1.]
+	\item
+	$M^* = (1-\delta)M^* + \epsilon$ gives\\ $M^*= \frac{\epsilon}{\delta}$
+	\item
+	Let $\mu_t(z_i)$ represent the number of firms of type $z_i$ at time t. Then:\\
+	$\mu_{t+1}(z_i) = (1-\delta)\sum_{j=1}^N{\mu_t(z_j)f(z_i|z_j)} + \epsilon\psi(z_i)$\\
+	Or in terms of matrix algebra:\\
+	$\mu_{t+1} = (1-\delta)\mu_tT + \epsilon\Psi$\\
+	Where $\mu_t$ is the 1xN measure over firm types, T is the NxN transition matrix (i.e. $t_{ij} = f(z_j|z_i)$), and $\Psi$ is the 1xN probability distribution for new firms (i.e. $\Psi_i = \psi(z_i)$.)
+	\item
+	$\mu^* = (1-\delta)\mu^*T + \epsilon\Psi$ gives:\\
+	$\mu^* = \epsilon\Psi(I-(1-\delta)T)^{-1}$
+	\item
+	\begin{lstlisting}
+N = 10;
+e = 1;
+delta = .1;
+beta = 1;
+gamma = .1;
+
+psi = zeros(1,N);
+T = zeros(N);
+I = eye(N);
+A= zeros(1,N);
+
+relprob=@(new, old) max(0, beta - gamma*(new-old)^2);
+
+for i = 1:N
+    psi(i) = 1/N;
+    for j= 1:N
+        A(i) = A(i) + relprob(j, i);
+    end
+end
+
+for i=1:N
+    for j = 1:N
+        T(i,j) = relprob(j, i) / A(i);
+    end
+end
+
+mustar = e*psi*inv(I-(1-delta)*T);
+
+mustar'
+	\end{lstlisting}
+	Prints transposed steady state measure over firm types.
+	\begin{lstlisting}
+ans =
+
+    0.7503
+    0.9625
+    1.0950
+    1.1011
+    1.0912
+    1.0912
+    1.1011
+    1.0950
+    0.9625
+    0.7503
+	\end{lstlisting}
+	\end{enumerate}
+
+\textbf{Question 2}
+\begin{enumerate}[1.]
+    \item 
+    \item
+    \item
+\end{enumerate}
+
+\textbf{Question 3}
+\begin{enumerate}[1.]
+    \item 
+    \item
+    \item
+    \item
+    \item
+\end{enumerate}
+
+\end{onehalfspace}
+\end{document}
