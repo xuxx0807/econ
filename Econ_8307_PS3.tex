@@ -76,7 +76,7 @@ mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi)
 \textbf{Question 2}\\
 \begin{enumerate}[1.]
 	\item
-	For firm $i$ at time $t$, its value function is
+	For a firm at time $t$, its value function is
 	\begin{equation}
 	V(z_{t})=\max_{n_{t}}\{z_{t}n_{t}-w_tn_{t}+\beta(1-\lambda)E_t[V(z_{t+1})]\}
 	\end{equation}
@@ -85,7 +85,22 @@ mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi)
 	\mu(z^')=\sum_z (1-\lambda)f(z^'|z)\mu(z)+M_t\phi(z^')
 	\end{equation}
 	\item
+	For a firm of productivity $z_t$ and employees from last period $n_{t-1}$, its value function is
+	\begin{equation}
+	\begin{split}
+	V(z_t,n_{t-1})=&\max_{n_t}\Big{z_tn_t^\alpha-w_tn_t-\tau w_t\max\{0,n_{t-1}-n_t\}\\
+	&+\beta\{-\lambda\tau w_tn_t+(1-\lambda)EV(z_{t+1},n_t)\}\Big}
+	\end{split}
+	\end{equation}
+	Transition function is
+	\begin{equation}
+	\begin{split}
+	\mu_{t+1}(z^',n^')=&\sum_z\sum_n(1-\lambda)I(n^*(z,n)=n^')f(z^'|z)\mu_t(z,n)\\
+	&+M_t\phi(z^')I(n^'=0)
+	\end{split}
+	\end{equation}
 	\item
+	
 \end{enumerate}
 
 \textbf{Question 3}\\
