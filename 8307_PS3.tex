@@ -105,11 +105,11 @@ ans =
     Where $n^*(z,n)$ is the argmax from the value function with arguments z and n. $\textbf{1}(a) = 1$ if a is true and $0$ otherwise. 
     \item
     Firm's value function:\\
-    $V(z_t, n_{t-1}) = \max\limits_{n_t, X}\left[z_tn_t^\alpha -w_tn_t -\tau w_t \max(o, n_{t-1}-n_t) + \beta(1-X) E(V(z_{t+1},n_t)) -X \tau E(w_{t+1}) n_t\right]$\\
-    $X \in \{1,0\}$\\
+    $V(z_t) = \max\limits_{n_t, X}\left[z_t n_t^\alpha -w_t n_t + \beta(1-X) E(V(z_{t+1})) - (1-X)k\right]$\\
+    $X \in \{0,1\}$\\
     Transition function of measure of types:\\
-    $\mu_{t+1}(z', n') = \sum\limits_{z}\sum\limits_{n}\left[(1-X^*(z,n))\textbf{1}(n^*(z, n) = n')f(z'|z)\mu_t(z,n)\right] + M_t\psi(z)\textbf{1}(n'=0)$\\
-    Where $n^*(z,n)$ and $X^*(z,n)$ are the argmax from the value function with arguments z and n. $\textbf{1}(a) = 1$ if a is true and $0$ otherwise. 
+    $\mu_{t+1}(z_i) = \sum\limits_{j=1}^{N}\left[(1-X^*(z_j))f(z_i|z_j)\mu_t(z_j)\right] + M_t\psi(z_i)$\\
+    Where $X^*(z)$ is the argmax from the value function with argument z. $\textbf{1}(a) = 1$ if a is true and $0$ otherwise. 
 \end{enumerate}
 
 \textbf{Question 3}
