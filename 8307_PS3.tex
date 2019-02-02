@@ -97,8 +97,7 @@ ans =
     Transition function of measure of types:\\
     $\mu_{t+1}(z_i) = \sum\limits_{j=1}^{N}\left[(1-\lambda)f(z_i|z_j)\mu_t(z_j)\right] + M_t\psi(z_i)$
     \item
-    Suppressing firm index i
-    Firm's value function:\\
+    Suppressing firm index i, firm's value function:\\
     $V(z_t, n_{t-1}) = \max\limits_{n_t}\left[z_tn_t^\alpha -w_tn_t -\tau w_t \max(o, n_{t-1}-n_t) + \beta(1-\lambda) E(V(z_{t+1},n_t)) -\lambda \tau E(w_{t+1}) n_t\right]$\\
     Transition function of measure of types:\\
     $\mu_{t+1}(z', n') = \sum\limits_{z}\sum\limits_{n}\left[(1-\lambda)\textbf{1}(n^*(z, n) = n')f(z'|z)\mu_t(z,n)\right] + M_t\psi(z)\textbf{1}(n'=0)$\\
@@ -115,7 +114,36 @@ ans =
 \textbf{Question 3}
 \begin{enumerate}[1.]
     \item 
+    Finding $n^*(z)$ where $z \in \{1,2,...,N\}$:
+    \begin{lstlisting}
+N = 5;
+p = .8;
+w = 1;
+alpha = .7;
+beta = .95;
+
+Z = zeros(1,N);
+nstar = zeros(N,1);
+for i =1:N
+    Z(i) = i;
+    nstar(i) = (w/(Z(i)*alpha))^(1/(alpha-1));
+end
+
+nstar
+    \end{lstlisting}
+    Prints $n^*$:
+    \begin{lstlisting}
+nstar =
+
+    0.3046
+    3.0697
+   11.8594
+   30.9405
+   65.0969
+    \end{lstlisting}
+    Not sure what "aggregate labor input" means in this context.
     \item
+    I think we need $\psi$ to do the rest of this?
     \item
     \item
     \item
