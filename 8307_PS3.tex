@@ -90,8 +90,26 @@ ans =
 \textbf{Question 2}
 \begin{enumerate}[1.]
     \item 
+    Firm's value function:\\
+    $V(z_{it}) = \max\limits_{n_{it}}\left[z_{it}n_{it}^\alpha -w_tn_{it} + \beta(1-\lambda) E(V(z_{i,t+1}))\right]$\\
+    Or equivalently:\\
+    $V(z_{it}) = \max\limits_{n_{it}}\left[z_{it}n_{it}^\alpha -w_tn_{it} + \beta(1-\lambda) \sum\limits_{j=1}^{N}V(z_j)f(z_j|z_{it})\right]$\\
+    Transition function of measure of types:\\
+    $\mu_{t+1}(z_i) = \sum\limits_{j=1}^{N}\left[(1-\lambda)f(z_i|z_j)\mu_t(z_j)\right] + M_t\psi(z_i)$
     \item
+    Suppressing firm index i
+    Firm's value function:\\
+    $V(z_t, n_{t-1}) = \max\limits_{n_t}\left[z_tn_t^\alpha -w_tn_t -\tau w_t \max(o, n_{t-1}-n_t) + \beta(1-\lambda) E(V(z_{t+1},n_t)) -\lambda \tau E(w_{t+1}) n_t\right]$\\
+    Transition function of measure of types:\\
+    $\mu_{t+1}(z', n') = \sum\limits_{z}\sum\limits_{n}\left[(1-\lambda)\textbf{1}(n^*(z, n) = n')f(z'|z)\mu_t(z,n)\right] + M_t\psi(z)\textbf{1}(n'=0)$\\
+    Where $n^*(z,n)$ is the argmax from the value function with arguments z and n. $\textbf{1}(a) = 1$ if a is true and $0$ otherwise. 
     \item
+    Firm's value function:\\
+    $V(z_t, n_{t-1}) = \max\limits_{n_t, X}\left[z_tn_t^\alpha -w_tn_t -\tau w_t \max(o, n_{t-1}-n_t) + \beta(1-X) E(V(z_{t+1},n_t)) -X \tau E(w_{t+1}) n_t\right]$\\
+    $X \in \{1,0\}$\\
+    Transition function of measure of types:\\
+    $\mu_{t+1}(z', n') = \sum\limits_{z}\sum\limits_{n}\left[(1-X^*(z,n))\textbf{1}(n^*(z, n) = n')f(z'|z)\mu_t(z,n)\right] + M_t\psi(z)\textbf{1}(n'=0)$\\
+    Where $n^*(z,n)$ and $X^*(z,n)$ are the argmax from the value function with arguments z and n. $\textbf{1}(a) = 1$ if a is true and $0$ otherwise. 
 \end{enumerate}
 
 \textbf{Question 3}
