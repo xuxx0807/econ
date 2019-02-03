@@ -17,11 +17,11 @@ for i=1:N
 end
 for i=1:N
 	for j=1:N
-		transitMatrix(i,j)=max(0,(beta-gamma*(z(j)-z(i))^2)/alpha(i))
+		transitMatrix(i,j)=max(0,(beta-gamma*(z(j)-z(i))^2)/alpha(i));
 	end
 end
 
-mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi)
+mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi);
 
 %Q3
 clear
@@ -31,11 +31,46 @@ alpha=.7;
 beta=.95;
 E=1;
 lambda=.1;
-tau=0;
-z=1:N
+tau=0.5;
+z=1:N;
 phi=ones(N,1)/N;
 transitMatrix=0.05*ones(N)+0.75*eye(N);
-muHat=((1-lambda)*transitMatrix.'-eye(N))\(-phi)
+muHat=((1-lambda)*transitMatrix.'-eye(N))\(-phi);
 
 n=@(z) (1./(alpha*z)).^(1/(alpha-1));
 labor=n(z)*phi;
+
+% indexat=@(fun,index) fun(:,index);
+% freeEntry=@(wage) beta*indexat(valueIteration(wage),1).'*phi-E;
+% wStar=fsolve(freeEntry,1)
+% value=valueIteration(wStar);
+val=valueIteration(1);
+val(:,1)
+function valMat = valueIteration (w)
+N=5;
+alpha=.7;
+beta=.95;
+lambda=.1;
+tau=0.5;
+z=1:N;
+phi=ones(N,1)/N;
+transitMatrix=0.05*ones(N)+0.75*eye(N);
+nGridNum=200;
+nGrid=0:100/(nGridNum-1):100;
+epsilon=100;
+valueMatrix=zeros(N,nGridNum);
+iteration=0;
+
+while (epsilon>1e-5) && (iteration<500)
+for i=1:N
+	for j=1:nGridNum
+		newValueMatrix(i,j)=max(z(i)*nGrid.^alpha-w*nGrid-tau*w*max(0,nGrid(j)-nGrid)+beta*((1-lambda)*transitMatrix(i,:)*valueMatrix-lambda*tau*w*nGrid));
+	end
+end
+epsilon=sum(sum(abs(newValueMatrix-valueMatrix)));
+valueMatrix=newValueMatrix;
+iteration=iteration+1;
+end
+valMat=valueMatrix;
+end
+
