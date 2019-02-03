@@ -32,3 +32,10 @@ beta=.95;
 E=1;
 lambda=.1;
 tau=0;
+z=1:N
+phi=ones(N,1)/N;
+transitMatrix=0.05*ones(N)+0.75*eye(N);
+muHat=((1-lambda)*transitMatrix.'-eye(N))\(-phi)
+
+n=@(z) (1./(alpha*z)).^(1/(alpha-1));
+labor=n(z)*phi;
