@@ -1,0 +1,153 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amsthm, amssymb, enumerate, mathrsfs, graphicx, subfig, verbatim, float, pdflscape, rotating, parskip, setspace, tikz, tikz-qtree, url, epstopdf, mathtools, latexsym, flexisym,accents, multirow,diagbox,accents}
+\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{breqn}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[round]{natbib}
+\addtolength{\parskip}{\baselineskip}
+\DeclareMathSizes{12}{13}{7}{7}
+\usepackage[bottom]{footmisc}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+
+\parskip 2pt
+\setlength\parindent{0cm}
+\begin{document}
+\begin{onehalfspace}
+
+
+\title{Econ 8307\\ Assignment 2 (Spring 2019)}
+\author{Jonah Coste, Fred Xu\\George Washington University}
+\date{}
+\maketitle
+\parskip 10pt
+\textbf{Question 1}
+\begin{enumerate}[1.]
+	\item
+	$M^* = (1-\delta)M^* + \epsilon$ gives\\ $M^*= \frac{\epsilon}{\delta}$
+	\item
+	Let $\mu_t(z_i)$ represent the number of firms of type $z_i$ at time t. Then:\\
+	$\mu_{t+1}(z_i) = (1-\delta)\sum_{j=1}^N{\mu_t(z_j)f(z_i|z_j)} + \epsilon\psi(z_i)$\\
+	Or in terms of matrix algebra:\\
+	$\mu_{t+1} = (1-\delta)\mu_tT + \epsilon\Psi$\\
+	Where $\mu_t$ is the 1xN measure over firm types, T is the NxN transition matrix (i.e. $t_{ij} = f(z_j|z_i)$), and $\Psi$ is the 1xN probability distribution for new firms (i.e. $\Psi_i = \psi(z_i)$.)
+	\item
+	$\mu^* = (1-\delta)\mu^*T + \epsilon\Psi$ gives:\\
+	$\mu^* = \epsilon\Psi(I-(1-\delta)T)^{-1}$
+	
+	\item
+	\begin{lstlisting}
+N = 10;
+e = 1;
+delta = .1;
+beta = 1;
+gamma = .1;
+
+psi = zeros(1,N);
+T = zeros(N);
+I = eye(N);
+A= zeros(1,N);
+
+relprob=@(new, old) max(0, beta - gamma*(new-old)^2);
+
+for i = 1:N
+    psi(i) = 1/N;
+    for j= 1:N
+        A(i) = A(i) + relprob(j, i);
+    end
+end
+
+for i=1:N
+    for j = 1:N
+        T(i,j) = relprob(j, i) / A(i);
+    end
+end
+
+mustar = e*psi*inv(I-(1-delta)*T);
+
+mustar'
+	\end{lstlisting}
+	Prints transposed steady state measure over firm types.
+	\begin{lstlisting}
+ans =
+
+    0.7503
+    0.9625
+    1.0950
+    1.1011
+    1.0912
+    1.0912
+    1.1011
+    1.0950
+    0.9625
+    0.7503
+	\end{lstlisting}
+	\end{enumerate}
+
+\textbf{Question 2}
+\begin{enumerate}[1.]
+    \item 
+    Firm's value function:\\
+    $V(z_{it}) = \max\limits_{n_{it}}\left[z_{it}n_{it}^\alpha -w_tn_{it} + \beta(1-\lambda) E(V(z_{i,t+1}))\right]$\\
+    Or equivalently:\\
+    $V(z_{it}) = \max\limits_{n_{it}}\left[z_{it}n_{it}^\alpha -w_tn_{it} + \beta(1-\lambda) \sum\limits_{j=1}^{N}V(z_j)f(z_j|z_{it})\right]$\\
+    Transition function of measure of types:\\
+    $\mu_{t+1}(z_i) = \sum\limits_{j=1}^{N}\left[(1-\lambda)f(z_i|z_j)\mu_t(z_j)\right] + M_t\psi(z_i)$
+    \item
+    Suppressing firm index i, firm's value function:\\
+    $V(z_t, n_{t-1}) = \max\limits_{n_t}\left[z_tn_t^\alpha -w_tn_t -\tau w_t \max(o, n_{t-1}-n_t) + \beta(1-\lambda) E(V(z_{t+1},n_t)) -\lambda \tau E(w_{t+1}) n_t\right]$\\
+    Transition function of measure of types:\\
+    $\mu_{t+1}(z', n') = \sum\limits_{z}\sum\limits_{n}\left[(1-\lambda)\textbf{1}(n^*(z, n) = n')f(z'|z)\mu_t(z,n)\right] + M_t\psi(z)\textbf{1}(n'=0)$\\
+    Where $n^*(z,n)$ is the argmax from the value function with arguments z and n. $\textbf{1}(a) = 1$ if a is true and $0$ otherwise. 
+    \item
+    Firm's value function:\\
+    $V(z_t) = \max\limits_{n_t, X}\left[z_t n_t^\alpha -w_t n_t + \beta(1-X) E(V(z_{t+1})) - (1-X)k\right]$\\
+    $X \in \{0,1\}$\\
+    Transition function of measure of types:\\
+    $\mu_{t+1}(z_i) = \sum\limits_{j=1}^{N}\left[(1-X^*(z_j))f(z_i|z_j)\mu_t(z_j)\right] + M_t\psi(z_i)$\\
+    Where $X^*(z)$ is the argmax from the value function with argument z.
+\end{enumerate}
+
+\textbf{Question 3}
+\begin{enumerate}[1.]
+    \item 
+    Finding $n^*(z)$ where $z \in \{1,2,...,N\}$:
+    \begin{lstlisting}
+N = 5;
+p = .8;
+w = 1;
+alpha = .7;
+beta = .95;
+
+Z = zeros(1,N);
+nstar = zeros(N,1);
+for i =1:N
+    Z(i) = i;
+    nstar(i) = (w/(Z(i)*alpha))^(1/(alpha-1));
+end
+
+nstar
+    \end{lstlisting}
+    Prints $n^*$:
+    \begin{lstlisting}
+nstar =
+
+    0.3046
+    3.0697
+   11.8594
+   30.9405
+   65.0969
+    \end{lstlisting}
+    Not sure what "aggregate labor input" means in this context.
+    \item
+    I think we need $\psi$ to do the rest of this?
+    \item
+    \item
+    \item
+\end{enumerate}
+
+\end{onehalfspace}
+\end{document}
