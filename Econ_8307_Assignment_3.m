@@ -40,11 +40,11 @@ muHat=((1-lambda)*transitMatrix.'-eye(N))\(-phi);
 n=@(z) (1./(alpha*z)).^(1/(alpha-1));
 labor=n(z)*phi;
 
-% indexat=@(fun,index) fun(:,index);
-% freeEntry=@(wage) beta*indexat(valueIteration(wage),1).'*phi-E;
-% wStar=fsolve(freeEntry,1)
-% value=valueIteration(wStar);
-value=valueIteration(1)
+indexat=@(fun,index) fun(:,index);
+freeEntry=@(wage) beta*indexat(valueIteration(wage),1).'*phi-E;
+wStar=fsolve(freeEntry,0)
+value=valueIteration(wStar);
+% value=valueIteration(1)
 function valMat = valueIteration (w)
 N=5;
 alpha=.7;
@@ -54,22 +54,23 @@ tau=0;
 z=1:N;
 phi=ones(N,1)/N;
 transitMatrix=0.05*ones(N)+0.75*eye(N);
-nGridNum=500;
+nGridNum=100;
 nGrid=0:100/(nGridNum-1):100;
 epsilon=100;
 valueMatrix=zeros(N,nGridNum);
 iteration=0;
-
+ind=zeros(N,nGridNum);
 while (epsilon>1e-5) && (iteration<500)
 for i=1:N
 	for j=1:nGridNum
-		newValueMatrix(i,j)=max(z(i)*nGrid.^alpha-w*nGrid-tau*w*max(0,nGrid(j)-nGrid)+beta*((1-lambda)*transitMatrix(i,:)*valueMatrix-lambda*tau*w*nGrid));
+		[newValueMatrix(i,j),ind(i,j)]=max(z(i)*nGrid.^alpha-w*nGrid-tau*w*max(0,nGrid(j)-nGrid)+beta*((1-lambda)*transitMatrix(i,:)*valueMatrix-lambda*tau*w*nGrid));
 	end
 end
 epsilon=sum(sum(abs(newValueMatrix-valueMatrix)));
 valueMatrix=newValueMatrix;
 iteration=iteration+1;
 end
-valMat=valueMatrix;
+nMatrix=nGrid(ind);
+valMat=[valueMatrix,nMatrix];
 end
 
