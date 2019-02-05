@@ -91,8 +91,7 @@ end
 
 function eqm = freeEntry (t)
 %Given firing cost rate, return equilibrium wage, value matrix, and labor matrix that satisfying free entry
-beta=.95;
-global N phi E;
+global N phi E beta;
 indexat=@(fun,index) fun(:,index);
 f=@(wage) beta*indexat(valueIteration(wage,t),1).'*phi-E;
 wStar=fsolve(f,0);
@@ -129,12 +128,20 @@ end
 
 function desRate = job (eqm)
 %Given equilibrium satisfying free entry, return job destruction rate
-global lambda nGridNum nmin nmax;
+global lambda nGridNum nmin nmax N transitMatrix;
 nGrid=nmin:nmax/(nGridNum-1):nmax;
 mass=measure(eqm);
 value=eqm{3};
 nTotal=sum(sum(mass.*value));
-nLoss=sum(sum(mass.*value*lambda+mass*(1-lambda).*max(0,nGrid-value)));
+nmat=repmat(nGrid,N,1);
+%nLoss=sum(sum(mass.*value*lambda+mass.*max(0,nGrid-value)));
+tempMass=(1-lambda)*mass;
+for i=1:N
+	for j=1:nGridNum
+		tempMass(i,j)=tempMass(:,j).'*transitMatrix(:,i);
+	end
+end
+nLoss=sum(sum(mass.*nmat*lambda+tempMass.*max(0,nmat-value)));
 desRate=nLoss/nTotal;
 end
 
