@@ -94,12 +94,14 @@ mass2=measure(eqm2);
 desRate2=job(eqm2);
 employ2=hh(eqm2);
 util2=log(eqm2{1}/omega)-employ2;
+percentage2=exp(omega*(employ2-employ1))*eqm1{1}/eqm2{1};
 
 eqm3=freeEntry(1);
 mass3=measure(eqm3);
 desRate3=job(eqm3);
 employ3=hh(eqm3);
 util3=log(eqm3{1}/omega)-employ3;
+percentage3=exp(omega*(employ3-employ1))*eqm1{1}/eqm3{1};
 
 %mu matrix
 %{
