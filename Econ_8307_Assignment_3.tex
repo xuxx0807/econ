@@ -1,0 +1,115 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amsthm, amssymb, enumerate, mathrsfs, graphicx, subfig, verbatim, float, pdflscape, rotating, parskip, setspace, tikz, tikz-qtree, url, epstopdf, mathtools, latexsym, flexisym, physics,accents, multirow,diagbox,accents}
+\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{breqn}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[round]{natbib}
+\addtolength{\parskip}{\baselineskip}
+\DeclareMathSizes{12}{13}{7}{7}
+\usepackage[bottom]{footmisc}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+
+\parskip 2pt
+\setlength\parindent{0cm}
+\begin{document}
+\begin{onehalfspace}
+
+
+\title{Econ 8307\\ Assignment 3 (Spring 2019)}
+\author{Jonah Coste, Fred Xu\\George Washington University}
+\date{}
+\maketitle
+\parskip 10pt
+\textbf{Question 1}\\
+\begin{enumerate}[1.]
+	\item
+	Denote the number of firm in steady state as $M$
+	\begin{euqation}
+	\begin{split}
+	M(1-\delta)+\epsilon&=M\\
+	M&=\frac{\epsilon}{\delta}
+	\end{split}
+	\end{equation}
+	\item
+	Denote the number of firm of type $z_i$ at time $t$ as $\mu_t(z_i)$
+	\begin{equation}
+	\mu_{t+1}(z^')=(1-\delta)\sum_{z}[f(z^'|z)\mu_t(z)]+\epsilon \phi(z^')
+	\end{equation}
+	\item
+	\begin{equation}
+	\begin{split}
+	(1-\delta)T^'\mu&=-\epsilon \mu\\
+	\mu&=-\epsilon((1-\delta)T^'-I)^{-1}\phi
+	\end{split}
+	\end{equation}
+	\item
+	\begin{lstlisting}
+N=10;
+epsilon=1;
+delta=.1;
+beta=1;
+gamma=.1;
+z=1:N;
+transitMatrix=eye(N);
+alpha=zeros(N,1);
+phi=ones(N,1)/N;
+mu=zeros(N,1);
+
+for i=1:N
+	for j=1:N
+		alpha(i)=alpha(i)+max(0,beta-gamma*(z(j)-z(i))^2);
+	end
+end
+for i=1:N
+	for j=1:N
+		transitMatrix(i,j)=max(0,(beta-gamma*(z(j)-z(i))^2)/alpha(i));
+	end
+end
+
+mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi)
+	\end{lstlisting}
+\end{enumerate}
+\textbf{Question 2}\\
+\begin{enumerate}[1.]
+	\item
+	For a firm at time $t$, its value function is
+	\begin{equation}
+	V(z_{t})=\max_{n_{t}}\{z_{t}n_{t}-w_tn_{t}+\beta(1-\lambda)E_t[V(z_{t+1})]\}
+	\end{equation}
+	Transition function for the measure over type $z^'$ is
+	\begin{equation}
+	\mu(z^')=\sum_z (1-\lambda)f(z^'|z)\mu(z)+M_t\phi(z^')
+	\end{equation}
+	\item
+	For a firm of productivity $z_t$ and employees from last period $n_{t-1}$, its value function is
+	\begin{equation}
+	\begin{split}
+	V(z_t,n_{t-1})=&\max_{n_t}\Big{z_tn_t^\alpha-w_tn_t-\tau w_t\max\{0,n_{t-1}-n_t\}\\
+	&+\beta\{-\lambda\tau w_tn_t+(1-\lambda)EV(z_{t+1},n_t)\}\Big}
+	\end{split}
+	\end{equation}
+	Transition function is
+	\begin{equation}
+	\begin{split}
+	\mu_{t+1}(z^',n^')=&\sum_z\sum_n(1-\lambda)I(n^*(z,n)=n^')f(z^'|z)\mu_t(z,n)\\
+	&+M_t\phi(z^')I(n^'=0)
+	\end{split}
+	\end{equation}
+	\item
+	
+\end{enumerate}
+
+\textbf{Question 3}\\
+\begin{enumerate}[1.]
+	\item
+	\item
+	\item
+	\item
+	\item
+\end{enumerate}
+\end{onehalfspace}
+\end{document}
