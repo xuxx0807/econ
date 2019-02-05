@@ -190,4 +190,11 @@ end
 Mstar = c/(y-E);
 emp = emp*Mstar
 
-increase = (5.0093+emp)/wguess
+increase = exp((.9017+emp) - log(wguess)) -1
+
+
+
+
+
+
+
