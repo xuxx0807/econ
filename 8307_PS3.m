@@ -67,7 +67,7 @@ mustar = psi*inv(I-(1-lambda)*T);
 mustar1 = mustar/sum(mustar);
 mustar1'
 
-%Part 2 b and 3
+%Part 2 b and 3,4,5
 N = 5;
 p = .8;
 alpha = .7;
@@ -75,7 +75,7 @@ beta = .95;
 lambda = .1;
 E = 1;
 wguess = 1;
-tau = 1.0;
+tau = 0.0;
 
 Z = zeros(1,N);
 
@@ -177,4 +177,17 @@ for i= 1:N
 end
 propdest = dest/jobs
 
+omega = 1;
+c = wguess/omega;
+y = 0;
+emp = 0;
+for i = 1:N
+    for j = 1:gridsize+1
+        y = y + Z(i)*nstar(i,j)^alpha * munew(i,j);
+        emp = emp + nstar(i,j)*munew(i,j);
+    end
+end
+Mstar = c/(y-E);
+emp = emp*Mstar
 
+increase = (5.0093+emp)/wguess

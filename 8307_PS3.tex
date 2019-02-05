@@ -307,10 +307,27 @@ tau =  1, wage = 4.92, job destruction = .181
 The cost of firing lowers wages. Job destruction varies a similar amount as wages.
     \item
 \begin{lstlisting}
+omega = 1;
+c = wguess/omega;
+y = 0;
+emp = 0;
+for i = 1:N
+    for j = 1:gridsize+1
+        y = y + Z(i)*nstar(i,j)^alpha * munew(i,j);
+        emp = emp + nstar(i,j)*munew(i,j);
+    end
+end
+Mstar = c/(y-E);
+emp = emp*Mstar
+\end{lstlisting}
+Prints steady state employment. Showing results for each value of tau.
+\begin{lstlisting}
+tau =  0, employment = .870
+tau = .5, employment = .795
+tau =  1, employment = .745
 \end{lstlisting}
     \item
-\begin{lstlisting}
-\end{lstlisting}
+    Since $\omega=1$ consumption = wages which is 5.88 in the base (tau = 0) case. Steady state one period utility is $C - \omega n = 5.01$ in the base case. To maintain this utility, consumption would need to be increased by $\frac{5.01+.795}{5.33}-1 = 8.9\%$ if tau = .5 and by $\frac{5.01+.745}{4.92}-1 = 17\%$ if tau = 1.
 \end{enumerate}
 
 \end{onehalfspace}
