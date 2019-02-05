@@ -188,7 +188,7 @@ nGrid=0:.5/(nGridNum-1):.5;
 mass=measure(eqm);
 value=eqm{3};
 nTotal=sum(sum(mass.*value));
-nLoss=sum(sum(mass.*value*lambda+mass.*value*(1-lambda).*max(0,nGrid-value)));
+nLoss=sum(sum(mass.*value*lambda+mass*(1-lambda).*max(0,nGrid-value)));
 desRate=nLoss/nTotal;
 end
 
