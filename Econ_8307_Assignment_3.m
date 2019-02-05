@@ -22,11 +22,15 @@ for i=1:N
 end
 
 mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi);
+muStar=epsilon/delta.*mu;
 
 %Q3
-clear
-global N alpha beta E transitMatrix omega z lambda phi nGridNum;
+clearvars -except muStar;
+global N alpha beta E transitMatrix omega z lambda phi nGridNum nmin nmax;
 nGridNum=100;
+nmin=0;
+nmax=0.5;
+omega=1;
 N=5;
 w=1;
 alpha=.7;
@@ -41,8 +45,6 @@ muHat=((1-lambda)*transitMatrix.'-eye(N))\(-phi);
 n=@(z) (1./(alpha*z)).^(1/(alpha-1));
 labor=n(z)*phi;
 
-
-omega=1;
 
 eqm1=freeEntry(0);
 %eqm 1st element is wage, 2nd is value matrix, 3rd is labor matrix
@@ -67,8 +69,9 @@ percentage3=exp(omega*(employ3-employ1))*eqm1{1}/eqm3{1};
 
 
 function [valueMatrix, nMatrix] = valueIteration (w,t)
-global N alpha beta lambda z phi transitMatrix nGridNum;
-nGrid=0:.5/(nGridNum-1):.5;
+%Given wage and firing cost rate, return matrices of value and optima; n_t given z_t and n_{t-1}, using value function iteration
+global N alpha beta lambda z phi transitMatrix nGridNum nmin nmax;
+nGrid=nmin:nmax/(nGridNum-1):nmax;
 epsilon=100;
 valueMatrix=zeros(N,nGridNum);
 iteration=0;
@@ -87,6 +90,7 @@ nMatrix=nGrid(ind);
 end
 
 function eqm = freeEntry (t)
+%Given firing cost rate, return equilibrium wage, value matrix, and labor matrix that satisfying free entry
 beta=.95;
 global N phi E;
 indexat=@(fun,index) fun(:,index);
@@ -97,8 +101,9 @@ eqm={wStar,valueMatrix,nMatrix};
 end
 
 function mu = measure (eqm)
-global N nGridNum lambda phi transitMatrix;
-nGrid=0:.5/(nGridNum-1):.5;
+%Given equilibrium satisfying free entry, return distribution over firm types, using iteration
+global N nGridNum lambda phi transitMatrix nmin nmax;
+nGrid=nmin:nmax/(nGridNum-1):nmax;
 mu=zeros(N,nGridNum);
 muNew=zeros(N,nGridNum);
 epsilon=100;
@@ -123,8 +128,9 @@ end
 end
 
 function desRate = job (eqm)
-global lambda nGridNum;
-nGrid=0:.5/(nGridNum-1):.5;
+%Given equilibrium satisfying free entry, return job destruction rate
+global lambda nGridNum nmin nmax;
+nGrid=nmin:nmax/(nGridNum-1):nmax;
 mass=measure(eqm);
 value=eqm{3};
 nTotal=sum(sum(mass.*value));
@@ -133,6 +139,7 @@ desRate=nLoss/nTotal;
 end
 
 function employ = hh (eqm)
+%Given equilibrium satisfying free entry, return employment, using labor market clearing condition
 global omega E alpha N z nGridNum
 mu=measure(eqm);
 value=eqm{3};
