@@ -25,6 +25,7 @@ mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi);
 
 %Q3
 clear
+global N;
 N=5;
 w=1;
 alpha=.7;
@@ -79,11 +80,27 @@ laborClear=@(M) wStar/omega+M*E-M*sum(sum(value(:,101:200).^alpha).*mu);
 mStar=fsolve(laborClear,0);
 employ=sum(sum(mStar*mu));
 %}
+omega=1;
 
-eqm=freeEntry(0);
+eqm1=freeEntry(0);
 %eqm 1st element is wage, 2nd is value matrix, 3rd is labor matrix
-mass=measure(eqm);
-desRate=job(eqm);
+mass1=measure(eqm1);
+desRate1=job(eqm1);
+employ1=hh(eqm1);
+util1=log(eqm1{1}/omega)-employ1;
+
+eqm2=freeEntry(0.5);
+mass2=measure(eqm2);
+desRate2=job(eqm2);
+employ2=hh(eqm2);
+util2=log(eqm2{1}/omega)-employ2;
+
+eqm3=freeEntry(1);
+mass3=measure(eqm3);
+desRate3=job(eqm3);
+employ3=hh(eqm3);
+util3=log(eqm3{1}/omega)-employ3;
+
 %mu matrix
 %{
 value=eqm{3}
@@ -92,7 +109,8 @@ nLoss=sum(sum(mass.*value*lambda+mass.*value*(1-lambda).*max(0,nGrid-value)));
 desRate=nLoss/nTotal;
 %}
 function [valueMatrix, nMatrix] = valueIteration (w,t)
-N=5;
+%N=5;
+global N;
 alpha=.7;
 beta=.95;
 lambda=.1;
@@ -121,7 +139,8 @@ end
 
 function eqm = freeEntry (t)
 beta=.95;
-N=5;
+%N=5;
+global N;
 phi=ones(N,1)/N;
 E=1;
 indexat=@(fun,index) fun(:,index);
@@ -132,7 +151,8 @@ eqm={wStar,valueMatrix,nMatrix};
 end
 
 function mu = measure (eqm)
-N=5;
+%N=5;
+global N;
 nGridNum=100;
 lambda=.1;
 nGrid=0:.5/(nGridNum-1):.5;
@@ -170,4 +190,19 @@ value=eqm{3};
 nTotal=sum(sum(mass.*value));
 nLoss=sum(sum(mass.*value*lambda+mass.*value*(1-lambda).*max(0,nGrid-value)));
 desRate=nLoss/nTotal;
+end
+
+function employ = hh (eqm)
+omega=1;
+E=1;
+alpha=.7;
+mu=measure(eqm);
+value=eqm{3};
+global N;
+z=1:N;
+nGridNum=100;
+mat=repmat(z,nGridNum,1).';
+laborClear=@(M) eqm{1}/omega+M*E-M*sum(sum(mat.*(value.^alpha).*mu));
+mStar=fsolve(laborClear,0);
+employ=sum(sum(mStar*mu.*eqm{3}));
 end
