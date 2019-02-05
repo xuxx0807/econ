@@ -39,6 +39,7 @@
 	$\mu^* = \epsilon\Psi(I-(1-\delta)T)^{-1}$
 	
 	\item
+	Computing steady state measure over firm types.
 	\begin{lstlisting}
 N = 10;
 e = 1;
@@ -143,7 +144,7 @@ nstar =
     \end{lstlisting}
     The aggregate labor input is:
     $\sum\limits_{z}\mu_t(z) n^*(z)$
-    Or in matrix notation: $\mu_t n^*$ where $mu_t$ is the 1xN measure over types and $n^*$ is the the Nx1 vector of optimal employment over types.
+    Or in matrix notation: $\mu_t n^*$ where $\mu_t$ is the 1xN measure over types and $n^*$ is the the Nx1 vector of optimal employment over types. Since the distribution of firms is uniform over firm types (see part 2) the aggregate labor input is $Number\ of\ firms*\sum\limits_{z}.2 *n^*(z) = Number\ of\ firms*22.2542$.
     \item
     We will assume that that the distribution for new firms $\psi$ is a uniform distribution.
     \begin{enumerate}
@@ -201,7 +202,7 @@ step = 1;
 gridsize = 100;
 gridmax = 100;
 
-while step > .001
+while step > .00001
 % Find Value function given wguess
 
 nvalues = zeros(gridsize+1,1);
@@ -214,7 +215,7 @@ Vold = zeros(N, gridsize+1);
 temp = zeros(gridsize+1,1);
 loss = 1;
 
-while loss > .01
+while loss > .00001
 Vnew = zeros(N, gridsize+1);
 for i = 1:N
     for j = 1:gridsize+1
@@ -245,7 +246,7 @@ end
 muold = ones(N, gridsize+1);
 loss2=1;
 
-while loss2 > .01
+while loss2 > .00001
 munew = zeros(N, gridsize+1);
 for i = 1:N
     for j = 1:gridsize+1
@@ -293,19 +294,21 @@ propdest = dest/jobs
 \begin{lstlisting}
 propdest =
 
-    0.2267
+    0.2267 
 \end{lstlisting}
     \end{enumerate}
     
     
-    \item Uses same code as 2b with tau parameter changed. List only results for equilibrium wage and job destruction for each value of tau. Results rounded because of computational restrictions.
+    \item Uses same code as 2b with tau parameter changed. List only results for equilibrium wage and job destruction for each value of tau.
 \begin{lstlisting}
-tau =  0, wage = 5.88, job destruction = .227
-tau = .5, wage = 5.33, job destruction = .203
-tau =  1, wage = 4.92, job destruction = .181
+tau =  0, wage = 5.8801, job destruction = .2267
+tau = .5, wage = 5.3305, job destruction = .2031
+tau =  1, wage = 4.9192, job destruction = .1813
 \end{lstlisting}
+ 
 The cost of firing lowers wages. Job destruction varies a similar amount as wages.
     \item
+    Finding steady state employment.
 \begin{lstlisting}
 omega = 1;
 c = wguess/omega;
@@ -322,12 +325,14 @@ emp = emp*Mstar
 \end{lstlisting}
 Prints steady state employment. Showing results for each value of tau.
 \begin{lstlisting}
-tau =  0, employment = .870
-tau = .5, employment = .795
-tau =  1, employment = .745
+tau =  0, employment = .8717
+tau = .5, employment = .7966
+tau =  1, employment = .7469
 \end{lstlisting}
+%ggg .8717, .7966, .7469
     \item
-    Since $\omega=1$ consumption = wages which is 5.88 in the base (tau = 0) case. Steady state one period utility is $log(C) - \omega n = .902$ in the base case. To maintain this utility, consumption would need to be increased by $exp\left(.902+.795 - log(5.33)\right)-1 = 2.35\%$ if tau = .5, and by $exp\left(.902+.745 - log(4.92)\right)-1 = 5.56\%$ if tau = 1.
+    Since $\omega=1$ consumption = wages which is 5.88 in the base (tau = 0) case. Steady state one period utility is $log(C) - \omega n = .8999$  in the base case. To maintain this utility, consumption would need to be increased by $exp\left(.8999+.7966 - log(5.3305)\right)-1 = 2.33\%$ if tau = .5, and by $exp\left(.8999+.7469 - log(4.9192)\right)-1 = 5.51\%$ if tau = 1.
+    %%% .8999; 2.33, 5.51
 \end{enumerate}
 
 \end{onehalfspace}
