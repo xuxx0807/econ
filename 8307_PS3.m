@@ -67,91 +67,114 @@ mustar = psi*inv(I-(1-lambda)*T);
 mustar1 = mustar/sum(mustar);
 mustar1'
 
-%Part 2 b
-%First find endogenous wage with entry condition.
+%Part 2 b and 3
+N = 5;
+p = .8;
+alpha = .7;
+beta = .95;
+lambda = .1;
 E = 1;
 wguess = 1;
-ECalc = 0;
-step = 1;
-pi = zeros(N,1);
+tau = 1.0;
 
-while step > 1E-15
-    for i =1:N
-        nstar(i) = (wguess/(Z(i)*alpha))^(1/(alpha-1));
-        pi(i)=Z(i)*nstar(i)^alpha - wguess*nstar(i);
-    end
-    V = inv(I-beta*(1-lambda)*T)*pi;
-    Ecalc = beta*psi*V;
-    if Ecalc-E >0
-        wguess = wguess + step;
-    else
-        wguess = wguess - step;
-        step = step/2;
-    end
+Z = zeros(1,N);
+
+for i =1:N
+    Z(i) = i;
 end
-w = wguess;
 
-%Now find steady state distribution.
+T = zeros(N);
+T=T+(1-p)/(N-1)+eye(N)*(p-(1-p)/(N-1));
+I=eye(N);
+psi= zeros(1,N);
+for i =1:N
+    psi(i) = 1/N;
+end
 
-%Find optimal n matrix
-gridsize = 200;
-gridmax = .2;
+%Find equilibrium wage
+step = 1;
+gridsize = 100;
+gridmax = 100;
+
+while step > .001
+% Find Value function given wguess
+
 nvalues = zeros(gridsize+1,1);
 for i = 1:gridsize+1
     nvalues(i)= gridmax*(i-1)/gridsize; 
 end
-nstar2 = zeros(N, gridsize+1);
+
+nstar = zeros(N, gridsize+1);
+Vold = zeros(N, gridsize+1);
 temp = zeros(gridsize+1,1);
+loss = 1;
+
+while loss > .01
+Vnew = zeros(N, gridsize+1);
 for i = 1:N
     for j = 1:gridsize+1
+        temp = zeros(gridsize+1,1);
         for k = 1:gridsize+1
-            temp(k) = Z(i)*nvalues(k)^alpha - w*nvalues(k);
+            temp(k) = Z(i)*nvalues(k)^alpha - wguess*nvalues(k) - tau*wguess*max(0,nvalues(j)-nvalues(k)) + beta*(1-lambda)*T(i,:)*Vold(:,k) - beta*lambda*tau*wguess*nvalues(k);
         end
         [M, I]= max(temp);
-        nstar2(i,j) = nvalues(I);
+        nstar(i,j) = nvalues(I);
+        Vnew(i,j) = Z(i)*nstar(i,j)^alpha - wguess*nstar(i,j) - tau*wguess*max(0,nvalues(j)-nstar(i,j)) + beta*(1-lambda)*T(i,:)*Vold(:,I) - beta*lambda*tau*wguess*nstar(i,j);
     end
+end
+loss = sum(abs(Vnew-Vold), 'all');
+Vold = Vnew;
+end
+V = Vnew;
+gridmax = round(max(nstar,[],'all')*1.1,2,'significant');
+Ecalc = beta*psi*V(:,1);
+if Ecalc-E >0
+    wguess = wguess + step;
+else
+    wguess = wguess - step;
+    step = step/2;
+end
 end
 
 %iterate to find steady state measure
-mmold = ones(N, gridsize+1);
-loss=1;
+muold = ones(N, gridsize+1);
+loss2=1;
 
-while loss > 1E-15
-mmnew = zeros(N, gridsize+1);
+while loss2 > .01
+munew = zeros(N, gridsize+1);
 for i = 1:N
     for j = 1:gridsize+1
         for ii = 1:N
             for jj = 1:gridsize+1
-                if nstar2(ii,jj) == nvalues(j)
-                    mmnew(i,j) = mmnew(i,j) + (1-lambda)*T(i,ii)*mmold(ii,jj);
+                if nstar(ii,jj) == nvalues(j)
+                    munew(i,j) = munew(i,j) + (1-lambda)*T(i,ii)*muold(ii,jj);
                 end
             end
         end
         if nvalues(j) == 0
-            mmnew(i,j) = mmnew(i,j) + psi(i);
+            munew(i,j) = munew(i,j) + psi(i);
         end
     end
 end
-loss = sum(abs(mmnew-mmold), 'all');
-mmold = mmnew;
+loss2 = sum(abs(munew-muold), 'all');
+muold = munew;
 end
 
-mm = mmnew/sum(mmnew,'all');
+mm = munew/sum(munew,'all');
 mu = sum(mm')
 
 jobs = 0;
 dest = 0;
 for i= 1:N
     for j = 1:gridsize+1
-        jobs = jobs + mm(i,j)*nstar(i);
+        jobs = jobs + mm(i,j)*nstar(i,j);
+        dest = dest + lambda*mm(i,j)*nstar(i,j);
         for k = 1:N
-            if k < i
-                dest = dest + mm(i,j)*T(i,k)*(nstar(i)-nstar(k));
+                kI = find(nvalues==nstar(i,j));
+                dest = dest + (1-lambda)*mm(i,j)*T(i,k) * max(0,(nstar(i,j)-nstar(k,kI)));
             end
         end
-    end
 end
-
 propdest = dest/jobs
 
 
