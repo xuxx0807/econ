@@ -25,7 +25,8 @@ mu=((1-delta)*transitMatrix.'-eye(N))\(-epsilon*phi);
 
 %Q3
 clear
-global N;
+global N alpha beta E transitMatrix omega z lambda phi nGridNum;
+nGridNum=100;
 N=5;
 w=1;
 alpha=.7;
@@ -40,46 +41,7 @@ muHat=((1-lambda)*transitMatrix.'-eye(N))\(-phi);
 n=@(z) (1./(alpha*z)).^(1/(alpha-1));
 labor=n(z)*phi;
 
-%{
-indexat=@(fun,index) fun(:,index);
-freeEntry=@(wage) beta*indexat(valueIteration(wage),1).'*phi-E;
-wStar=fsolve(freeEntry,0)
-value=valueIteration(wStar);
-nGridNum=100;
-nGrid=0:.5/(nGridNum-1):.5;
-%}
-%{
-mu=zeros(N,nGridNum);
-muNew=zeros(N,nGridNum);
-epsilon=100;
-iteration=0;
-while epsilon>1e-5&&iteration<500
-	for a=1:N
-		for b=1:nGridNum
-			for i=1:N
-				for j=1:nGridNum
-					muNew(a,b)=muNew(a,b)+(1-lambda)*(value(i,j+100)==nGrid(b))*transitMatrix(i,a)*mu(i,j);
-				end
-			end
-			muNew(a,b)=muNew(a,b)+phi(a)*(b==1);
-		end
-	end
-	epsilon=sum(sum(abs(muNew-mu)));
-	mu=muNew;
-	muNew=zeros(N,nGridNum);
-	iteration=iteration+1;
-end
 
-nTotal=sum(sum(mu.*value(:,101:200)));
-nLoss=sum(sum(mu.*value(:,101:200)*lambda+mu.*value(:,101:200)*(1-lambda).*max(0,nGrid-value(:,101:200))));
-desRate=nLoss/nTotal;
-
-
-omega=1;
-laborClear=@(M) wStar/omega+M*E-M*sum(sum(value(:,101:200).^alpha).*mu);
-mStar=fsolve(laborClear,0);
-employ=sum(sum(mStar*mu));
-%}
 omega=1;
 
 eqm1=freeEntry(0);
@@ -103,24 +65,9 @@ employ3=hh(eqm3);
 util3=log(eqm3{1}/omega)-employ3;
 percentage3=exp(omega*(employ3-employ1))*eqm1{1}/eqm3{1};
 
-%mu matrix
-%{
-value=eqm{3}
-nTotal=sum(sum(mass.*value));
-nLoss=sum(sum(mass.*value*lambda+mass.*value*(1-lambda).*max(0,nGrid-value)));
-desRate=nLoss/nTotal;
-%}
+
 function [valueMatrix, nMatrix] = valueIteration (w,t)
-%N=5;
-global N;
-alpha=.7;
-beta=.95;
-lambda=.1;
-tau=t;
-z=1:N;
-phi=ones(N,1)/N;
-transitMatrix=0.05*ones(N)+0.75*eye(N);
-nGridNum=100;
+global N alpha beta lambda z phi transitMatrix nGridNum;
 nGrid=0:.5/(nGridNum-1):.5;
 epsilon=100;
 valueMatrix=zeros(N,nGridNum);
@@ -129,7 +76,7 @@ ind=zeros(N,nGridNum);
 while (epsilon>1e-5) && (iteration<500)
 for i=1:N
 	for j=1:nGridNum
-		[newValueMatrix(i,j),ind(i,j)]=max(z(i)*nGrid.^alpha-w*nGrid-tau*w*max([zeros(1,nGridNum);nGrid(j)-nGrid],[],1)+beta*((1-lambda)*transitMatrix(i,:)*valueMatrix-lambda*tau*w*nGrid));
+		[newValueMatrix(i,j),ind(i,j)]=max(z(i)*nGrid.^alpha-w*nGrid-t*w*max([zeros(1,nGridNum);nGrid(j)-nGrid],[],1)+beta*((1-lambda)*transitMatrix(i,:)*valueMatrix-lambda*t*w*nGrid));
 	end
 end
 epsilon=sum(sum(abs(newValueMatrix-valueMatrix)));
@@ -141,10 +88,7 @@ end
 
 function eqm = freeEntry (t)
 beta=.95;
-%N=5;
-global N;
-phi=ones(N,1)/N;
-E=1;
+global N phi E;
 indexat=@(fun,index) fun(:,index);
 f=@(wage) beta*indexat(valueIteration(wage,t),1).'*phi-E;
 wStar=fsolve(f,0);
@@ -153,17 +97,12 @@ eqm={wStar,valueMatrix,nMatrix};
 end
 
 function mu = measure (eqm)
-%N=5;
-global N;
-nGridNum=100;
-lambda=.1;
+global N nGridNum lambda phi transitMatrix;
 nGrid=0:.5/(nGridNum-1):.5;
 mu=zeros(N,nGridNum);
 muNew=zeros(N,nGridNum);
 epsilon=100;
 iteration=0;
-transitMatrix=0.05*ones(N)+0.75*eye(N);
-phi=ones(N,1)/N;
 value=eqm{3};
 while epsilon>1e-5&&iteration<500
 	for a=1:N
@@ -184,8 +123,7 @@ end
 end
 
 function desRate = job (eqm)
-lambda=.1;
-nGridNum=100;
+global lambda nGridNum;
 nGrid=0:.5/(nGridNum-1):.5;
 mass=measure(eqm);
 value=eqm{3};
@@ -195,14 +133,9 @@ desRate=nLoss/nTotal;
 end
 
 function employ = hh (eqm)
-omega=1;
-E=1;
-alpha=.7;
+global omega E alpha N z nGridNum
 mu=measure(eqm);
 value=eqm{3};
-global N;
-z=1:N;
-nGridNum=100;
 mat=repmat(z,nGridNum,1).';
 laborClear=@(M) eqm{1}/omega+M*E-M*sum(sum(mat.*(value.^alpha).*mu));
 mStar=fsolve(laborClear,0);
