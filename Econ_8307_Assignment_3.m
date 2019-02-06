@@ -135,13 +135,7 @@ value=eqm{3};
 nTotal=sum(sum(mass.*value));
 nmat=repmat(nGrid,N,1);
 %nLoss=sum(sum(mass.*value*lambda+mass.*max(0,nGrid-value)));
-tempMass=(1-lambda)*mass;
-for i=1:N
-	for j=1:nGridNum
-		tempMass(i,j)=tempMass(:,j).'*transitMatrix(:,i);
-	end
-end
-nLoss=sum(sum(mass.*nmat*lambda+tempMass.*max(0,nmat-value)));
+nLoss=sum(sum(mass.*eqm{3}*lambda+mass.*max(0,nmat-value)));
 desRate=nLoss/nTotal;
 end
 
