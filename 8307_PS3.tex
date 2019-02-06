@@ -283,7 +283,7 @@ for i= 1:N
     for j = 1:gridsize+1
         jobs = jobs + mm(i,j)*nstar(i,j);
         dest = dest + lambda*mm(i,j)*nstar(i,j);
-        dest = dest + mm(i,j) * max(0,(nvalues(j) - nstar(i,j)));
+        dest = dest + mm(i,j) * max(0,(nvalues(j) $-$ nstar(i,j)));
         end
 end
 propdest = dest/jobs
