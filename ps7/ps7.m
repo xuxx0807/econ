@@ -14,6 +14,7 @@ mu=(eye(N)-(1-delta)*TranMat')\(E*psi);
 %solve for equilibrium wage
 f=@(w) sum(mu.*z.^(1/(1-theta))*(w/theta)^(theta/(theta-1)))-w;
 wage=fsolve(f,1);
+%wage=theta^theta*(sum(mu.*z.^(1/(1-theta))))^(1-theta);
 n=mu.*(wage./(z*theta)).^(1/(1-theta));
 
 
@@ -34,6 +35,7 @@ end
 %solve for wage along the path
 g=@(w) sum(muPath.*z.^(1/(1-theta)).*(w./theta).^(theta/(theta-1)),1)-w;
 wPath=fsolve(g,wPath);
+%wPath=theta^theta.*(sum(muPath.*z.^(1/(1-theta)),1)).^(1-theta);
 
 %Compute transition
 nPath=(wPath./(z*theta)).^(1/(theta-1));
