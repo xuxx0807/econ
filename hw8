@@ -7,9 +7,9 @@ lambda =.1;
 theta = 1;
 K = 1;
 E=1;
-tau =1
+tau = 0.5
 znew = zmax*g^A;
-N=11;
+N=10;
 
 Z = zeros(1,N);
 
@@ -20,7 +20,7 @@ end
 wguess = 1;
 step = .5;
 gridsize = 100;
-gridmax = 10;
+gridmax = 2.5;
 
 while step > .0001
 % Find Value function given wguess
@@ -108,12 +108,12 @@ emp1 = sum(mu1.*nstar, 'all');
 h = (w/theta)/(y1-E-x1*K);
 mu = mu1*h;
 
-
+output = y1*h
 emp = emp1*h
 wage = w
-updatefirms = x1*h
-M = h/lambda
+updatefirms = x1*h;
+M = h/lambda;
 shareupdatefirms = updatefirms/M
-updateemp = sum(mu.*xstar.*nstar, 'all')
+updateemp = sum(mu.*xstar.*nstar, 'all');
 shareupdateemp = updateemp/emp
 
