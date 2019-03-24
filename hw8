@@ -1,0 +1,119 @@
+g = 1/1.05;
+alpha = .7;
+zmax = 1;
+A = 10;
+beta =.97;
+lambda =.1;
+theta = 1;
+K = 1;
+E=1;
+tau =1
+znew = zmax*g^A;
+N=11;
+
+Z = zeros(1,N);
+
+for z =1:N
+    Z(z) = zmax*g^(z-1);
+end
+
+wguess = 1;
+step = .5;
+gridsize = 100;
+gridmax = 10;
+
+while step > .0001
+% Find Value function given wguess
+
+nvalues = zeros(gridsize+1,1);
+for ni = 1:gridsize+1
+    nvalues(ni)= gridmax*(ni-1)/gridsize; 
+end
+
+nstar = zeros(N, gridsize+1);
+xstar = zeros(N,gridsize+1);
+Vold = ones(N, gridsize+1);
+Vnew = ones(N, gridsize+1);
+temp = zeros(gridsize+1,1);
+loss = 1;
+
+while loss > .1
+Vold = Vnew;
+Vnew = zeros(N, gridsize+1);
+for i = 1:N
+    for j = 1:gridsize+1
+        temp = zeros(gridsize+1,2);
+        for k = 1:gridsize+1
+            temp(k, 1) = Z(i)*nvalues(k)^alpha - wguess*nvalues(k) - tau*wguess*max(0,nvalues(j)-nvalues(k)) + beta*(1-lambda)*Vold(1,k)-K - beta*lambda*tau*wguess*nvalues(k);
+            temp(k, 2) = Z(i)*nvalues(k)^alpha - wguess*nvalues(k) - tau*wguess*max(0,nvalues(j)-nvalues(k)) + beta*(1-lambda)*Vold(min(i+1,N),k) - beta*lambda*tau*wguess*nvalues(k);
+        end
+        [Mu, Iu]= max(temp(:,1));
+        [Mdu, Idu]= max(temp(:,2));
+        if Mu>Mdu
+            nstar(i,j) = nvalues(Iu);
+            xstar(i,j) = 1;
+            Vnew(i,j) = Mu;
+        else
+            nstar(i,j) = nvalues(Idu);
+            xstar(i,j) = 0;
+            Vnew(i,j) = Mdu;
+        end
+    end
+end
+loss = sum(abs(Vnew-Vold), 'all');
+end
+V = Vnew;
+Ecalc = beta*V(A,1);
+if Ecalc-E >0
+    wguess = wguess + step;
+else
+    wguess = wguess - step;
+    step=step/2;
+end
+end
+w=wguess;
+
+%iterate to find steady state measure
+muold = zeros(N, gridsize+1);
+muold(A,1) =1;
+loss2=1;
+
+while loss2 > 1E-15
+munew = zeros(N, gridsize+1);
+for j = 1:gridsize+1
+        for ii = 1:N
+            for jj = 1:gridsize+1
+                if nstar(ii,jj) == nvalues(j)
+                    if xstar(ii,jj) == 1
+                        munew(1,j) = munew(1,j) + (1-lambda)*muold(ii,jj);
+                    else
+                        munew(min(ii+1,N),j) = munew(min(ii+1,N),j) + (1-lambda)*muold(ii,jj);
+                    end
+                 end
+            end
+        end
+end
+munew(A,1) = munew(A,1) + 1;
+loss2 = sum(abs(munew-muold), 'all');
+muold = munew;
+end
+mu1 = munew;
+
+
+ystar=Z'.*(nstar.^alpha);
+
+y1 = sum(mu1.*ystar,'all');
+x1 = sum(mu1.*xstar, 'all');
+emp1 = sum(mu1.*nstar, 'all');
+h = (w/theta)/(y1-E-x1*K);
+mu = mu1*h;
+
+
+emp = emp1*h
+wage = w
+updatefirms = x1*h
+M = h/lambda
+shareupdatefirms = updatefirms/M
+updateemp = sum(mu.*xstar.*nstar, 'all')
+shareupdateemp = updateemp/emp
+
